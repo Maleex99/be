@@ -5,14 +5,22 @@ from math import pi
 import numpy as np
 
 class Axis:
+    """Classe permettant d'afficher toute l'interface en rapport avec un axe du robot"""
 
     def __init__(self, robotId, axeIndex, axisType = "liaison"):
+        """Crée un axe
+        
+        Paramètres:
+            robotId -- int correspondant à l'id du robot
+            axeIndex -- index de l'axe sur le robot
+            axisType -- string "liaison" ou "outil"
+        """
         self.axeIndex = axeIndex
         self.robotId = robotId
-        self.startPos = []
-        self.display = False
-        self.btn = None
-        self.axisType = axisType
+        self.startPos = []          #utile pour bien positionner l'axe de l'outil
+        self.display = False        #Indique si l'axe est affiché
+        self.btn = None             #Bouton permettant l'affichage/le retrait de l'axe
+        self.axisType = axisType    #Indique si c'est une liaison ou un outil
         self.btnValue = 0
         if axisType == "liaison":
             self.startPos = [0, 0, 0]
@@ -20,39 +28,47 @@ class Axis:
             self.startPos = [0, -1, 0]
 
     def displayAxis(self):
+        """Fait apparaitre l'axe en 3D sur le robot"""
         self.xAxis = p.addUserDebugLine(self.startPos, np.array(self.startPos) + [1, 0, 0], [255, 0, 0], parentObjectUniqueId = self.robotId, parentLinkIndex = self.axeIndex)
         self.yAxis = p.addUserDebugLine(self.startPos, np.array(self.startPos) + [0, 1, 0], [0, 255, 0], parentObjectUniqueId = self.robotId, parentLinkIndex = self.axeIndex)
         self.zAxis = p.addUserDebugLine(self.startPos, np.array(self.startPos) + [0, 0, 1], [0, 0, 255], parentObjectUniqueId = self.robotId, parentLinkIndex = self.axeIndex)
         self.display = True
 
     def remove(self):
+        """Enlève affichage l'axe sur le robot"""
         p.removeUserDebugItem(self.xAxis)
         p.removeUserDebugItem(self.yAxis)
         p.removeUserDebugItem(self.zAxis)
         self.display = False
     
     def displayButton(self):
+        """Affiche le bouton permettant d'afficher/retirer l'axe"""
+        # Récupération du numéro de l'axe (Ox)
         axeNumber = -1
         if self.axisType == "liaison":
             axeNumber = str(axeIndex+1)
         else:
             axeNumber = str(axeIndex+1+1)
 
+        #Affiche le bouton
         self.btn = p.addUserDebugParameter("Afficher/Retirer O" + axeNumber, 1, 0, 0)
 
     def removeButton(self):
+        """Retire le bouton permettant d'afficher/retirer l'axe"""
+        if self.btn is None: return
+
         p.removeUserDebugItem(self.btn)
         self.btn = None
 
     def checkButton(self):
+        """Gère les action du bouton"""
         btnActualValue = p.readUserDebugParameter(self.btn)
-        print(btnActualValue)
-        if self.btnValue < btnActualValue:
+        if self.btnValue < btnActualValue:  # Si la valeur précédente du bouton est > à celle actuelle on a appuyé dessus
             if self.display:
                 self.remove()
             else:
                 self.displayAxis()
-            self.btnValue = btnActualValue
+            self.btnValue = btnActualValue  # Mémorisation de la nouvelle valeur du bouton
         
 
 # Press the green button in the gutter to run the script.
