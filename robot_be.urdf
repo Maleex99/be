@@ -1,0 +1,61 @@
+<robot name="robot_be">
+    <link name="world"/>
+
+    <link name="corp_1">
+        <visual>
+            <origin xyz="0 0 -1" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.1" length="-2"/>
+            </geometry>
+            <material name = "Red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="corp_2">
+        <visual>
+            <origin xyz="0 0 -0.5" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.2 0.2 1"/>
+            </geometry>
+            <material name = "Blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+    </link>
+
+    <link name="outil">
+        <visual>
+            <origin xyz="0 -0.5 0" rpy="1.5707 0 0"/>
+            <geometry>
+                <cylinder radius="0.1" length="1"/>
+            </geometry>
+            <material name="Green">
+                <color rgba="0 1 0 1"/>
+            </material>
+        </visual>  
+    </link>
+
+    <joint name="Rotoide_1" type="continuous">
+        <origin xyz="0 0 2" rpy="0 0 0"/>
+        <parent link="world"/>
+        <child link="corp_1"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <joint name="Prismatique" type="prismatic">
+        <origin xyz="0 0 0" rpy="-1.5707 -1.5707 0"/>
+        <parent link="corp_1"/>
+        <child link="corp_2"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="0" upper="1" effort="0" velocity="0"/>
+    </joint>
+
+    <joint name="Rotoide_2" type="continuous">
+        <origin xyz="0 0 0" rpy="-1.5707 0 0"/>
+        <parent link="corp_2"/>
+        <child link="outil"/>
+        <axis xyz="0 0 1"/>
+    </joint>    
+</robot>
