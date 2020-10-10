@@ -4,7 +4,7 @@ import numpy as np
 
 class Outil:
     
-    def __init__(self, robotId, corpIndex, liaisonIndex):
+    def __init__(self, robotId, liaisonIndex, corpIndex):
         self.corpIndex = corpIndex
         self.robotId = robotId
         self.liaisonIndex = liaisonIndex

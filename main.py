@@ -3,8 +3,7 @@ import time
 import pybullet_data
 from math import pi
 import numpy as np
-from Liaison import Liaison
-from Outil import Outil
+from Robot import Robot
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -21,18 +20,12 @@ if __name__ == '__main__':
     q2ParamSlider = p.addUserDebugParameter("q2", 0, 1, 0)
     q3ParamSlider = p.addUserDebugParameter("q3", -pi, pi, 0)
     
-    robotId = p.loadURDF("robot_be.urdf", cubeStartPos, cubeStartOrientation)
+    robotId = p.loadURDF("robot_be.urdf", cubeStartPos, cubeStartOrientation)   
 
-    # Création axes
-    liaisons = []
-    nbJoin = p.getNumJoints(robotId)
-    for liaisonIndex in range(nbJoin-1):
-        liaisons.append(Liaison(robotId, liaisonIndex))
-        liaisons[liaisonIndex].displayAxeButton()
-        liaisons[liaisonIndex].displayQiButton()
-    liaisons.append(Outil(robotId, nbJoin-1, nbJoin-1))
-    liaisons[nbJoin-1].displayAxeButton()
-    liaisons[nbJoin-1].displayCoordButton()
+    robot = Robot(robotId, 3)
+    robot.displayAxeButon(-1)
+    robot.displayQiButton(-1)
+    robot.displayCoordButton()
 
 
     for i in range(10000):
@@ -46,10 +39,8 @@ if __name__ == '__main__':
         p.setJointMotorControl2(robotId,1,p.POSITION_CONTROL,targetPosition=q2Param)
         p.setJointMotorControl2(robotId,2,p.POSITION_CONTROL,targetPosition=q3Param)
 
-        # Check Axis buttons
-        for liaison in liaisons:
-            liaison.buttonListener()
-            liaison.updateDisplay()
+        # Check buttons
+        robot.buttonListener()
 
         p.stepSimulation()
         time.sleep(1. / 240.)
