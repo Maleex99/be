@@ -25,7 +25,7 @@
         </visual>
     </link>
 
-    <link name="outil">
+    <link name="corp_3">
         <visual>
             <origin xyz="0 -0.5 0" rpy="1.5707 0 0"/>
             <geometry>
@@ -55,7 +55,26 @@
     <joint name="Rotoide_2" type="continuous">
         <origin xyz="0 0 0" rpy="-1.5707 0 0"/>
         <parent link="corp_2"/>
-        <child link="outil"/>
+        <child link="corp_3"/>
         <axis xyz="0 0 1"/>
-    </joint>    
+    </joint>
+
+
+    <link name="outil_link">
+        <visual>
+            <origin xyz="0 0.0 0.0"/>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+            <material name="Invisible">
+                <color rgba="0.0 0.0 0.0 0.0"/>
+            </material>
+        </visual>
+    </link>
+
+    <joint name="outil" type="fixed">
+        <origin xyz="0 -1 0" rpy="0 0 0"/>
+        <parent link="corp_3"/>
+        <child link="outil_link"/>
+    </joint>
 </robot>
