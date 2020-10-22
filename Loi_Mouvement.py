@@ -40,12 +40,10 @@ def geta5(A, B, C, tf):
     ''' Fonction pour obtenir a5'''
     return (12*A - 6*B + C) / (2.0 * tf**2)
     
-def getTfQ(posA, vitA, accA, posB, vitB, accB, vMax, aMax):
+def getTfQ(posA, vitA, accA, posB, vitB, accB, vMax, aMax, pas = 0.001):
     ''' Fonction pour obtenir Tf optimal à 1ms prés'''
     vMaxCalc = sys.float_info.max
     aMaxCalc = sys.float_info.max
-    
-    pas = 0.001
 
     tf = pas
     a0 = geta0(posA)
@@ -105,7 +103,7 @@ def getTfQ(posA, vitA, accA, posB, vitB, accB, vMax, aMax):
 
 
 
-def polyCommande(posA, vitA, accA, posB, vitB, accB, vMax = [10.0, 10.0, 10.0], aMax = [10.0, 10.0, 10.0]):
+def polyCommande(posA, vitA, accA, posB, vitB, accB, vMax = [10.0, 10.0, 10.0], aMax = [10.0, 10.0, 10.0], te = 0.001):
     ''' Fonction retournant les equations de commande des qi'''
     
     # Le nombre de Qi pour lesquels on doit trouver les equations de commande
@@ -115,9 +113,9 @@ def polyCommande(posA, vitA, accA, posB, vitB, accB, vMax = [10.0, 10.0, 10.0], 
     
     # Récupération des tfs optimaux
     for i in range(nbQi):
-        tf = getTfQ(posA[i], vitA[i], accA[i], posB[i], vitB[i], accB[i], vMax[i], aMax[i])
+        tf = getTfQ(posA[i], vitA[i], accA[i], posB[i], vitB[i], accB[i], vMax[i], aMax[i], te)
         if tf is None:
-            raise ValueError("tf > 10000")
+            raise ValueError("tf > 10 000 s")
         tfs.append(tf)
     
     # Conservation du tf maximal pour la sinchronisation des axes
@@ -152,9 +150,9 @@ def polyCommande(posA, vitA, accA, posB, vitB, accB, vMax = [10.0, 10.0, 10.0], 
 
 if __name__ == "__main__":
                                     #   qA       qA.      qA..     qB       qB.      qB..
-   (pos, vit, acc, tf) = polyCommande([0,0,0], [0,0,0], [0,0,0], [1,2,3], [1,1,1], [0,0,0])
+   (pos, vit, acc, tf) = polyCommande([0,0,0], [0,0,0], [0,0,0], [1,2,3], [1,1,7], [0,0,0])
    
-   x = np.arange(0, tf, 0.01)
+   x = np.arange(0, tf, 0.001)
    for i in range(3):
        ypos = pos[i](x)
        yvit = vit[i](x)
