@@ -103,7 +103,7 @@ def getTfQ(posA, vitA, accA, posB, vitB, accB, vMax, aMax, pas = 0.001):
 
 
 
-def polyCommande(posA, vitA, accA, posB, vitB, accB, vMax = [10.0, 10.0, 10.0], aMax = [10.0, 10.0, 10.0], te = 0.001):
+def getPolyCommande(posA, vitA, accA, posB, vitB, accB, vMax = [10.0, 10.0, 10.0], aMax = [10.0, 10.0, 10.0], te = 0.001):
     ''' Fonction retournant les equations de commande des qi'''
     
     # Le nombre de Qi pour lesquels on doit trouver les equations de commande
@@ -150,7 +150,7 @@ def polyCommande(posA, vitA, accA, posB, vitB, accB, vMax = [10.0, 10.0, 10.0], 
 
 if __name__ == "__main__":
                                     #   qA       qA.      qA..     qB       qB.      qB..
-   (pos, vit, acc, tf) = polyCommande([0,0,0], [0,0,0], [0,0,0], [1,2,3], [1,1,7], [0,0,0])
+   (pos, vit, acc, tf) = getPolyCommande([0,0,0], [0,0,0], [0,0,0], [1,2,3], [1,1,7], [0,0,0])
    
    x = np.arange(0, tf, 0.001)
    for i in range(3):
