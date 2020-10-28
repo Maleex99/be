@@ -33,8 +33,5 @@ def get_t43(t34):
     P = -np.dot(R, t34[:3,3])
     return np.insert(np.c_[R,P], 3,[0, 0, 0, 1], axis=0)
     
-def get_t04(t03, t34 = get_t34()):
-    return np.matmul(t03, t34)
-
 def extract_xyz(t):
     return (t[0][3], t[1][3], t[2][3])
