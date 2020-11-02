@@ -1,2 +1,20 @@
 m:2
 Te:0.001
+q1:
+ pos:
+  min:-inf
+  max:inf
+ vmax:10
+ amax:10
+q2:
+ pos:
+  min:-inf
+  max:inf
+ vmax:10
+ amax:10
+q3:
+ pos:
+  min:-inf
+  max:inf
+ vmax:10
+ amax:10

@@ -3,10 +3,10 @@
 from mgd import t03_MGD as MGD
 from mgi import MGI_opti as MGI
 from Loi_Mouvement import getPolyCommande
+from ParamRobot import ParamRobot
 import util as u
 import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 def display_qi_command(pos, vit, acc, tf, te):
    x = np.arange(0, tf, te)
@@ -37,6 +37,9 @@ def display_qi_command(pos, vit, acc, tf, te):
 def display_3D_mouvement(points, depart, arrive):
     points = np.array(points)
     
+    depart = np.round(depart, 2)
+    arrive = np.round(arrive, 2)
+    
     fig = plt.figure()
     ax = fig.gca(projection='3d')
     ax.plot(points[:,1], points[:,0], points[:,2])
@@ -53,16 +56,18 @@ if __name__ == "__main__":
 
     n = 2 # nombre de points
     
-    params = u.load_param()
+    params = ParamRobot()
     
     points_xyz = [[] for i in range(n)]
     point_qi = []
-    t34 = params.get('t34', np.eye(4))
-    t43 = u.get_t43(t34)
-    m = params.get('m',2)
+    t34 = params.get_param('t34', np.eye(4))
+    t43 = u.inverse_mat_rot(t34)
+    m = params.get_param('m', 2, float)
     qi_prev = [0, 0, 0]
     
     # Récupération des coordonnées x, y ,z de n points
+    qi_min = params.get_posmin(1,2,3)
+    qi_max = params.get_posmax(1,2,3)
     for i,point in enumerate(points_xyz):
         for axe in ("x", "y", "z"):
             coord = None
@@ -76,11 +81,14 @@ if __name__ == "__main__":
                     print("Erreur : " + axe + " doit être un nombre décimal !\n")
                     coord = None
                     pass
-        qi_prev = MGI(point, m, t34, qi_prev = qi_prev)
+        qi_prev = MGI(point, m, t34, qi_min=qi_min, qi_max=qi_max, qi_prev=qi_prev)
         point_qi.append( qi_prev )
     
-    te = params.get("Te",0.001)
-    (pos, vit, acc, tf) = getPolyCommande(point_qi[0], [0,0,0], [0,0,0], point_qi[1], [0,0,0], [0,0,0], te=te)
+    
+    vMax = params.get_vmax(1,2,3)
+    aMax = params.get_amax(1,2,3)
+    te = params.get_param("Te", 0.001, float)
+    (pos, vit, acc, tf) = getPolyCommande(point_qi[0], [0,0,0], [0,0,0], point_qi[1], [0,0,0], [0,0,0], vMax=vMax, aMax=aMax, te=te)
     
     display_qi_command(pos, vit, acc, tf, te)
     
