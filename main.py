@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from mgd import t03_MGD as MGD
+from mgd import MGD as MGD
 from mgi import MGI_opti as MGI
 from Loi_Mouvement import getPolyCommande
 from ParamRobot import ParamRobot
@@ -34,6 +34,8 @@ def display_qi_command(pos, vit, acc, tf, te):
        
        plt.xlabel("Time (s)")
        
+       plt.show()
+       
 def display_3D_mouvement(points, depart, arrive):
     points = np.array(points)
     
@@ -50,6 +52,7 @@ def display_3D_mouvement(points, depart, arrive):
     ax.set_ylabel('X')
     ax.set_zlabel('Z')
     
+    plt.show()
 
 
 if __name__ == "__main__":
@@ -61,7 +64,7 @@ if __name__ == "__main__":
     points_xyz = [[] for i in range(n)]
     point_qi = []
     t34 = params.get_param('t34', np.eye(4))
-    t43 = u.inverse_mat_rot(t34)
+    t43 = u.inverse_mat_homogene(t34)
     m = params.get_param('m', 2, float)
     qi_prev = [0, 0, 0]
     

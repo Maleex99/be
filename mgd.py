@@ -1,6 +1,6 @@
 import numpy as np
 
-def t03_MGD(qi, m):
+def MGD(qi, m):
 
     #q list
     q1 = qi[0]
