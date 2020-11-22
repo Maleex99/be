@@ -4,8 +4,8 @@ import numpy as np
 from math import sin,cos
 
 
-def MDI(dxp, dphi, q ,t34):
-    q1, q2, q3 = q
+def MDI(dxp, dphi, qi ,t34):
+    q1, q2, q3 = qi
     
     s1 = sin(q1)
     c1 = cos(q1)
@@ -44,6 +44,6 @@ def MDI(dxp, dphi, q ,t34):
 
     if np.linalg.matrix_rank(Jd) == 3:
         J_inv = np.linalg.pinv(J)
-        return np.dot(J_inv, d)
+        return np.transpose(np.dot(J_inv, d)).tolist()[0]
     else:
         raise ValueError("Mouvement impossible !")

@@ -1,0 +1,17 @@
+A:
+ pos:
+  x:0
+  y:0
+  z:2
+B:
+ pos:
+  x:1
+  y:0
+  z:2
+ vit:
+  x:1
+C:
+ pos:
+  x:2
+  y:0
+  z:2

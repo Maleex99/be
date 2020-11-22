@@ -1,111 +1,215 @@
 # -*- coding: utf-8 -*-
 
-from mgd import MGD as MGD
-from mgi import MGI_opti as MGI
-from Loi_Mouvement import getPolyCommande
-from ParamRobot import ParamRobot
-import util as u
-import numpy as np
-import matplotlib.pyplot as plt
+import sys
 
-def display_qi_command(pos, vit, acc, tf, te):
-   x = np.arange(0, tf, te)
-   for i in range(3):
-       ypos = pos[i](x)
-       yvit = vit[i](x)
-       yacc = acc[i](x)
-       
-       plt.figure(i)
-       
-       plt.subplot(3,1,1)
-       plt.title("q"+str(i+1))
-       plt.xticks([])
-       plt.ylabel("Position")
-       plt.plot(x, ypos)
-       
-       plt.subplot(3,1,2)
-       plt.xticks([])
-       plt.ylabel("Vitesse")
-       plt.plot(x, yvit)
-       
-       plt.subplot(3,1,3)
-       plt.ylabel("Acélération")
-       plt.plot(x, yacc)
-       
-       plt.xlabel("Time (s)")
-       
-       plt.show()
-       
-def display_3D_mouvement(points, depart, arrive):
-    points = np.array(points)
+import matplotlib.pyplot as plt
+import numpy as np
+
+import util as u
+
+from ParamPoints import ParamPoints
+from ParamRobot import ParamRobot
+
+from mgi import MGI_opti as MGI
+from mdi import MDI
+from mgd import MGD
+from mdd import MDD
+
+from Loi_Mouvement import getPolyCommande
+
+def display_point(param_points, values, tf, te):
+    u.plotPoint2D((0, values[0]), param_points.get_nom(0))
     
-    depart = np.round(depart, 2)
-    arrive = np.round(arrive, 2)
-    
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    ax.plot(points[:,1], points[:,0], points[:,2])
-    ax.scatter(depart[1],depart[0],depart[2], c = 'g', marker = 'o')
-    ax.scatter(arrive[1],arrive[0],arrive[2], c = 'r', marker = 'o')
-    
-    ax.set_xlabel('Y')
-    ax.set_ylabel('X')
-    ax.set_zlabel('Z')
+    tfin = 0
+    for i,t in enumerate(tf):
+        tfin += t
+        u.plotPoint2D((tfin, values[int(tfin/te)-1]), param_points.get_nom(i+1))
+
+def display_qi(ypos, yvit, yacc, tf, te, param_points):
+    for i in range(3):
+        x = np.arange(0, np.sum(tf)-te, te)
+        
+        plt.figure(i)
+            
+        plt.subplot(3,1,1)
+        plt.title("q"+str(i+1))
+        plt.xticks([])
+        plt.ylabel("Position")
+        plt.plot(x, ypos[i])
+        display_point(param_points, ypos[i], tf, te)
+        
+        plt.subplot(3,1,2)
+        plt.xticks([])
+        plt.ylabel("Vitesse")
+        plt.plot(x, yvit[i])
+        display_point(param_points, yvit[i], tf, te)
+        
+        plt.subplot(3,1,3)
+        plt.ylabel("Acélération")
+        plt.plot(x, yacc[i])
+        display_point(param_points, yacc[i], tf, te)
+        
+        plt.xlabel("Time (s)")
     
     plt.show()
-
-
-if __name__ == "__main__":
-
-    n = 2 # nombre de points
     
-    params = ParamRobot()
+def display_traj(pos, param_points, param_robot):
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
     
-    points_xyz = [[] for i in range(n)]
-    point_qi = []
-    t34 = params.get_param('t34', np.eye(4))
-    t43 = u.inverse_mat_homogene(t34)
-    m = params.get_param('m', 2, float)
-    qi_prev = [0, 0, 0]
+    for i in range(param_points.get_nbPoints()):
+        u.plotPoint3D(param_points.get_pos(i), ax, param_points.get_nom(i))
     
-    # Récupération des coordonnées x, y ,z de n points
-    qi_min = params.get_posmin(1,2,3)
-    qi_max = params.get_posmax(1,2,3)
-    for i,point in enumerate(points_xyz):
-        for axe in ("x", "y", "z"):
-            coord = None
-            while coord is None:
-                coord = input("Quel est le " + axe + " pour le point " + str(i) + " ?\n")
-                try:
-                    coord = float(coord)
-                    point.append(coord)
-                    pass
-                except ValueError:
-                    print("Erreur : " + axe + " doit être un nombre décimal !\n")
-                    coord = None
-                    pass
-        qi_prev = MGI(point, m, t34, qi_min=qi_min, qi_max=qi_max, qi_prev=qi_prev)
-        point_qi.append( qi_prev )
+    p = np.transpose(np.array(pos))
     
+    m = param_robot.get_param("m")
+    t34 = param_robot.get_param("t34")
     
-    vMax = params.get_vmax(1,2,3)
-    aMax = params.get_amax(1,2,3)
-    te = params.get_param("Te", 0.001, float)
-    (pos, vit, acc, tf) = getPolyCommande(point_qi[0], [0,0,0], [0,0,0], point_qi[1], [0,0,0], [0,0,0], vMax=vMax, aMax=aMax, te=te)
-    
-    display_qi_command(pos, vit, acc, tf, te)
-    
-    pos_t = []
-    for t in np.arange(0, tf, te):
-        q1 = pos[0](t)
-        q2 = pos[1](t)
-        q3 = pos[2](t)
+    xyz = []
+    for q in p:
+        q1, q2, q3 = q;
         
         t03 = MGD((q1, q2, q3), m)
         t04 = np.dot(t03, t34)
         
         coord = list(u.extract_xyz(t04))
-        
-        pos_t.append(coord)
+        xyz.append(coord)
     
-    display_3D_mouvement(pos_t, points_xyz[0], points_xyz[1])
+    xyz = np.array(xyz)
+    
+    ax.plot(xyz[:,0], xyz[:,1], xyz[:,2])
+    
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    
+    plt.show()
+
+def display_vit_xyz(qi, dqi, param_points, param_robot, tf, te):
+    t34 = param_robot.get_param("t34")
+    
+    dxt = []
+    dphit = []
+    
+    qi = np.transpose(np.array(qi))
+    dqi = np.transpose(np.array(dqi))
+    
+    for i,q in enumerate(qi):
+        dq = dqi[i]
+        dx, dphi = MDD(q, dq, t34)
+        dxt.append(dx)
+        dphit.append(dphi)
+        
+    plt.figure()
+    
+    title = ["dx", "dy", "dz"]
+    title1 = ["dphix", "dphiy", "dphiz"]
+    
+    x = np.arange(0, np.sum(tf)-te, te)
+    
+    dxt = np.array(dxt)
+    dphit = np.array(dphit)
+    
+    for i in range(3):
+        plt.subplot(3,2,1+i*2)
+        if i == 2:
+            plt.xlabel("Time (s)")
+        else :
+            plt.xticks([])
+        plt.title(title[i])
+        plt.plot(x, dxt[:,i])
+        display_point(param_points, dxt[:,i], tf, te)
+        
+        plt.subplot(3,2,2+i*2)
+        if i == 2:
+            plt.xlabel("Time (s)")
+        else :
+            plt.xticks([])
+        plt.title(title1[i])
+        plt.plot(x, dphit[:,i])
+        display_point(param_points, dphit[:,i], tf, te)
+        
+    plt.show()
+
+def display(pos, vit, acc, tf, te, param_points, param_robot):
+    pos_t = [[],[],[]]
+    vit_t = [[],[],[]]
+    acc_t = [[],[],[]]
+    
+    for i in range(3):
+        for j in range(len(pos)):
+            tfin = tf[j]
+            x = np.arange(0+te, tfin, te)
+            
+            pos_t[i] += pos[j][i](x).tolist()
+            vit_t[i] += vit[j][i](x).tolist()
+            acc_t[i] += acc[j][i](x).tolist()
+            
+    display_qi(pos_t, vit_t, acc_t, tf, te, param_points)
+    
+    display_traj(pos_t, param_points, param_robot)
+    
+    display_vit_xyz(pos_t, vit_t, param_points, param_robot, tf, te)
+        
+        
+
+if __name__ == "__main__":
+    
+    param_points = ParamPoints("position")
+    params = ParamRobot()
+    
+    nb_points = param_points.get_nbPoints();
+    
+    t34 = params.get_param('t34', np.eye(4))
+    t43 = u.inverse_mat_homogene(t34)
+    m = params.get_param('m', 2, float)
+    qi_prev = [0, 0, 0]
+    
+    qi_min = params.get_posmin(1,2,3)
+    qi_max = params.get_posmax(1,2,3)
+    
+    # calcul la valeur des qi et des dqi pour chaque points
+    point_qi = []
+    point_dqi = []
+    for i in range(nb_points):
+        xyz = param_points.get_pos(i)
+        
+        qi = []
+        try:
+            qi = MGI(xyz, m, t34, qi_min=qi_min, qi_max=qi_max, qi_prev=qi_prev)
+            point_qi.append(qi)
+            qi_prev = qi
+        
+        except ValueError:
+            print("La postion du point " + param_points.get_nom(i) + " est impossible !")
+            sys.exit()
+        
+        
+        dx, dphi = param_points.get_vit(i)
+        
+        dqi = []
+        try:
+            dqi = MDI(dx, dphi, qi, t34)
+            point_dqi.append(dqi)
+        
+        except ValueError:
+            print("Le movement au point " + param_points.get_nom(i) + " est impossible !")
+            sys.exit()
+    
+    vMax = params.get_vmax(1,2,3)
+    aMax = params.get_amax(1,2,3)
+    te = params.get_param("Te", 0.001, float)
+    
+    pos = []
+    vit = []
+    acc = []
+    tf = []
+    for i in range(1, nb_points):
+        (p, v, a, t) = getPolyCommande(point_qi[i-1], point_dqi[i-1], [0,0,0], point_qi[i], point_dqi[i], [0,0,0], vMax=vMax, aMax=aMax, te=te)
+        pos.append(p)
+        vit.append(v)
+        acc.append(a)
+        tf.append(t)
+        
+    display(pos, vit, acc, tf, te, param_points, params)
+        

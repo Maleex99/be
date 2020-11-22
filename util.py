@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import matplotlib.pyplot as plt
 import numpy as np   
     
 def inverse_mat_homogene(m):
@@ -15,3 +16,17 @@ def extract_xyz(m):
     Fonction pour récupérer P d'une matrice de passage
     '''
     return tuple(m[:3,3])
+
+def plotPoint2D(coord, nom = ""):
+    '''
+    Fonction pour afficher un point avec un nom sur un graphique 2D
+    '''
+    plt.scatter(coord[0], coord[1], c = 'Y', marker = 'o')
+    plt.annotate(nom, coord)
+    
+def plotPoint3D(coord, ax, nom = ""):
+    '''
+    Fonction pour afficher un point avec un nom sur un graphique 3D
+    '''
+    ax.scatter(coord[0], coord[1], coord[2], c = 'Y', marker = 'o')
+    ax.text(coord[0], coord[1], coord[2], nom)
