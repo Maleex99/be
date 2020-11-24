@@ -10,6 +10,11 @@ B:
   z:2
  vit:
   x:1
+  y:0
+  z:0
+  rx:0
+  ry:0
+  rz:0
 C:
  pos:
   x:2

@@ -1,6 +1,22 @@
 import numpy as np
 
 def MGD(qi, m):
+    '''
+    Fonction pour calculer un MGD
+
+    Parameters
+    ----------
+    qi : list de float
+        Liste des qi : [q1, q2, q3].
+    m : float
+        Valeur du paramètre m du robot.
+
+    Returns
+    -------
+    result : list de float
+        Liste des positions x, y, z du robot : [x, y, z].
+
+    '''
 
     #q list
     q1 = qi[0]

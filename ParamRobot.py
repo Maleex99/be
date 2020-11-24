@@ -6,6 +6,9 @@ from math import inf
 from Param import Param
 
 class ParamRobot(Param):
+    '''
+    Classe permettant de lire et écrire dans un fichier de paramétre du robot.
+    '''
     def __init__(self):
         self.param = {}
         self.fileName = "robot_param"

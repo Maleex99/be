@@ -4,6 +4,9 @@ import re
 from math import pi
 
 class Param:
+    '''
+    Classe permettant de lire et écrire dans un fichier de paramétre.
+    '''
     def __init__(self, fileName):
         self.param = {}
         self.fileName = fileName

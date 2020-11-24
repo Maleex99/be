@@ -22,6 +22,40 @@ def test_qi(qi, qi_min, qi_max, i):
 def MGI(xyz, m, t34, E1 = -1, E3 = 1, qi_min = [-inf, -inf, -inf], qi_max = [inf, inf, inf], qi_prev = [0, 0, 0]):
     '''
     Fonction permettant de calculer un qi d'une position selon le point xyz à atteindre.
+
+    Parameters
+    ----------
+    xyz : list de float
+        Liste des position x, y, z : [x, y, z].
+    m : float
+        Valeur du paramètre m du robot.
+    t34 : np.array() 4x4
+        Matrice homogène t34.
+    E1 : int 1 ou -1, optional
+        Valeur de l'erreur E1. The default is -1.
+    E3 : int 1 ou -1, optional
+        Valeur de l'erreur E3. The default is 1.
+    qi_min : list de float, optional
+        Liste des valeurs minimales des qi : [q1min, q2min, q3min]. The default is [-inf, -inf, -inf].
+    qi_max : list de float, optional
+        Liste des valeurs maximalex des qi : [q1min, q2min, q3min]. The default is [inf, inf, inf].
+    qi_prev : list de float, optional
+        Liste des valeur précedente des qi (postion avant déplacement) : [q1, q2, q3]. The default is [0, 0, 0].
+
+    Raises
+    ------
+    ValueError
+        Erreur lorsque la postition est impossible pour le robot avec les paramètres donnés.
+
+    Returns
+    -------
+    q1 : float
+        Valeur du q1 pour cette configuration.
+    q2 : float
+        Valeur du q2 pour cette configuration.
+    q3 : float
+        Valeur du q3 pour cette configuration.
+
     '''
     x,y,z = xyz         # Récupération des coordonées x, y et z (P de T04).
     
@@ -73,7 +107,33 @@ def MGI(xyz, m, t34, E1 = -1, E3 = 1, qi_min = [-inf, -inf, -inf], qi_max = [inf
 
 def MGI_opti(xyz, m, t34, qi_min = [-inf, -inf, -inf], qi_max = [inf, inf, inf], qi_prev = [0, 0, 0]):
     '''
-    Fonction pour optenir le qi du point xyz demandant un mouvement minimum du robot
+    Fonction pour optenir le résultat du MGI avec le plus petit déplacement de qi.
+
+    Parameters
+    ----------
+    xyz : list de float
+        Liste des position x, y, z : [x, y, z].
+    m : float
+        Valeur du paramètre m du robot.
+    t34 : np.array() 4x4
+        Matrice homogène t34.
+    qi_min : list de float, optional
+        Liste des valeurs minimales des qi : [q1min, q2min, q3min]. The default is [-inf, -inf, -inf].
+    qi_max : list de float, optional
+        Liste des valeurs maximalex des qi : [q1min, q2min, q3min]. The default is [inf, inf, inf].
+    qi_prev : list de float, optional
+        Liste des valeur précedente des qi (postion avant déplacement) : [q1, q2, q3]. The default is [0, 0, 0].
+
+    Raises
+    ------
+    ValueError
+        Erreur lorsque la postition est impossible pour le robot avec les paramètres donnés.
+
+    Returns
+    -------
+    TYPE list de float
+        Liste des qi : [q1, q2, q3].
+
     '''
     qis = []            # Liste pour stocker les qis calculés.
     qi_distance = []    # Liste pour stocker les distances de chaque qi calculé par rapport au qi de départ.

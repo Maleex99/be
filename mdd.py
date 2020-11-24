@@ -4,6 +4,26 @@ import numpy as np
 from math import cos, sin
 
 def MDD(pos_q, vit_q, t34):
+    '''
+    Fonction pour calculer un MDD.
+
+    Parameters
+    ----------
+    pos_q : list de float
+        list : [q1, q2, q3].
+    vit_q : list de float
+        list : [dq1, dq2, dq3].
+    t34 : np.array() 4x4
+        Matrice homogène t34.
+
+    Returns
+    -------
+    dxp : list de float
+        Translation sur les axe x y z, [dx, dy, dz].
+    dphi : list de float
+        Rotation sur les axe x y z, [drx, dry, drz].
+
+    '''
     q1 , q2, q3 = pos_q
     vq1, vq2, vq3 = vit_q
     t34x, t34y, t34z = t34[:3, 3]

@@ -5,6 +5,31 @@ from math import sin,cos
 
 
 def MDI(dxp, dphi, qi ,t34):
+    '''
+    Fonction pour calculer un MDI
+
+    Parameters
+    ----------
+    dxp : list de float
+        Translation sur x, y, z : [dx, dy, dz].
+    dphi : list de float
+        Rotaion sur x, y, z : [drx, dry, drz].
+    qi : list de float
+        Postion des qi du robot : [q1, q2, q3].
+    t34 : np.array() 4x4
+        Matrice homogène t34.
+
+    Raises
+    ------
+    ValueError
+        Erreur lorsque le mouvement demandé n'est pas réalisable par le robot dans cette configuration.
+
+    Returns
+    -------
+    list de float
+        Liste des dqi : [dq1, dq2, dq3].
+
+    '''
     q1, q2, q3 = qi
     
     s1 = sin(q1)

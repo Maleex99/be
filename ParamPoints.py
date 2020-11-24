@@ -3,7 +3,9 @@
 from Param import Param
 
 class ParamPoints(Param):
-    
+    '''
+    Classe permettant de lire et écrire dans un fichier contenant les points.
+    '''    
     def __init__(self, filename):
         Param.__init__(self, filename)
         

@@ -18,6 +18,7 @@ from mdd import MDD
 from Loi_Mouvement import getPolyCommande
 
 def display_point(param_points, values, tf, te):
+    '''Fonction pour afficher des points sur une courbe 2D à un t donnée.'''
     u.plotPoint2D((0, values[0]), param_points.get_nom(0))
     
     tfin = 0
@@ -26,6 +27,7 @@ def display_point(param_points, values, tf, te):
         u.plotPoint2D((tfin, values[int(tfin/te)-1]), param_points.get_nom(i+1))
 
 def display_qi(ypos, yvit, yacc, tf, te, param_points):
+    '''Fonction pour afficher les courbes des qi.'''
     for i in range(3):
         x = np.arange(0, np.sum(tf)-te, te)
         
@@ -54,6 +56,7 @@ def display_qi(ypos, yvit, yacc, tf, te, param_points):
     plt.show()
     
 def display_traj(pos, param_points, param_robot):
+    '''Fonction pour afficher la courbe de la trajectoir du robot en 3D à l'aide du MGD.'''
     fig = plt.figure()
     ax = fig.gca(projection='3d')
     
@@ -86,6 +89,7 @@ def display_traj(pos, param_points, param_robot):
     plt.show()
 
 def display_vit_xyz(qi, dqi, param_points, param_robot, tf, te):
+    '''Fonction pour afficher les vitesse sur les axe x, y et z à l'aide du MDD'''
     t34 = param_robot.get_param("t34")
     
     dxt = []
@@ -132,6 +136,7 @@ def display_vit_xyz(qi, dqi, param_points, param_robot, tf, te):
     plt.show()
 
 def display(pos, vit, acc, tf, te, param_points, param_robot):
+    '''Fonction pour afficher tous les graphiques des valeurs du robot.'''
     pos_t = [[],[],[]]
     vit_t = [[],[],[]]
     acc_t = [[],[],[]]

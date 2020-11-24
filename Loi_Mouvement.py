@@ -41,7 +41,7 @@ def geta5(A, B, C, tf):
     return (12*A - 6*B + C) / (2.0 * tf**2)
     
 def getTfQ(posA, vitA, accA, posB, vitB, accB, vMax, aMax, pas = 0.001):
-    ''' Fonction pour obtenir Tf optimal à 1ms prés'''
+    ''' Fonction pour obtenir Tf optimal à un pas prés'''
     vMaxCalc = sys.float_info.max
     aMaxCalc = sys.float_info.max
 
@@ -144,35 +144,3 @@ def getPolyCommande(posA, vitA, accA, posB, vitB, accB, vMax = [10.0, 10.0, 10.0
         acc.append( np.poly1d([20*a5[i], 12*a4[i], 6*a3[i], 2*a2[i]]) )
     
     return (pos, vit, acc, tf)
-
-
-
-
-if __name__ == "__main__":
-                                    #   qA       qA.      qA..     qB       qB.      qB..
-   (pos, vit, acc, tf) = getPolyCommande([0,0,0], [0,0,0], [0,0,0], [1,2,3], [1,1,7], [0,0,0])
-   
-   x = np.arange(0, tf, 0.001)
-   for i in range(3):
-       ypos = pos[i](x)
-       yvit = vit[i](x)
-       yacc = acc[i](x)
-       
-       plt.figure(i)
-       
-       plt.subplot(3,1,1)
-       plt.title("q"+str(i+1))
-       plt.xticks([])
-       plt.ylabel("Position")
-       plt.plot(x, ypos)
-       
-       plt.subplot(3,1,2)
-       plt.xticks([])
-       plt.ylabel("Vitesse")
-       plt.plot(x, yvit)
-       
-       plt.subplot(3,1,3)
-       plt.ylabel("Acélération")
-       plt.plot(x, yacc)
-       
-       plt.xlabel("Time (s)")
