@@ -77,6 +77,8 @@ def display_traj(pos, param_points, param_robot):
         
         coord = list(u.extract_xyz(t04))
         xyz.append(coord)
+        
+    xyz = np.round(xyz, 3)
     
     xyz = np.array(xyz)
     
@@ -87,6 +89,7 @@ def display_traj(pos, param_points, param_robot):
     ax.set_zlabel('Z')
     
     plt.show()
+
 
 def display_vit_xyz(qi, dqi, param_points, param_robot, tf, te):
     '''Fonction pour afficher les vitesse sur les axe x, y et z à l'aide du MDD'''
@@ -111,8 +114,8 @@ def display_vit_xyz(qi, dqi, param_points, param_robot, tf, te):
     
     x = np.arange(0, np.sum(tf)-te, te)
     
-    dxt = np.array(dxt)
-    dphit = np.array(dphit)
+    dxt = np.round(np.array(dxt), 3)
+    dphit = np.round(np.array(dphit), 3)
     
     for i in range(3):
         plt.subplot(3,2,1+i*2)
